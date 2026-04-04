@@ -1,0 +1,243 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function listingCreateValid() {
+      return signedIn()
+        && request.resource.data.keys().hasOnly([
+          'title',
+          'category',
+          'image',
+          'minimumPrice',
+          'year',
+          'bidType',
+          'currentBid',
+          'increment',
+          'description',
+          'details',
+          'sellerName',
+          'sellerNameKey',
+          'sellerUid',
+          'status',
+          'createdAt',
+          'updatedAt',
+          'highestBidderUid',
+          'highestBidderName',
+          'highestBidderNameKey',
+          'highestBidderMaxBid',
+          'highestBidderAutoIncrement',
+          'selectedBidId',
+          'sealedBidCount',
+          'bidCount'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.category is string
+        && request.resource.data.image is string
+        && request.resource.data.minimumPrice is number
+        && request.resource.data.minimumPrice > 0
+        && request.resource.data.year is number
+        && request.resource.data.year >= 1900
+        && request.resource.data.bidType in ['open', 'sealed']
+        && request.resource.data.currentBid is number
+        && request.resource.data.currentBid == request.resource.data.minimumPrice
+        && request.resource.data.increment is number
+        && request.resource.data.increment > 0
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 0
+        && request.resource.data.details is list
+        && request.resource.data.sellerName is string
+        && request.resource.data.sellerNameKey is string
+        && request.resource.data.sellerUid is string
+        && request.resource.data.status == 'active'
+        && request.resource.data.createdAt is number
+        && request.resource.data.updatedAt is number
+        && request.resource.data.highestBidderUid == null
+        && request.resource.data.highestBidderName == ''
+        && request.resource.data.highestBidderNameKey == ''
+        && request.resource.data.highestBidderMaxBid == 0
+        && request.resource.data.highestBidderAutoIncrement == 0
+        && request.resource.data.selectedBidId == ''
+        && request.resource.data.sealedBidCount == 0
+        && request.resource.data.bidCount == 0;
+    }
+
+    function listingOpenBidValid() {
+      return signedIn()
+        && resource.data.status == 'active'
+        && resource.data.bidType == 'open'
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'currentBid',
+          'highestBidderUid',
+          'highestBidderName',
+          'highestBidderNameKey',
+          'highestBidderPhone',
+          'highestBidderMaxBid',
+          'highestBidderAutoIncrement',
+          'bidCount',
+          'updatedAt'
+        ])
+        && request.resource.data.currentBid is number
+        && request.resource.data.currentBid >= resource.data.currentBid
+        && (request.resource.data.highestBidderUid == null || request.resource.data.highestBidderUid is string)
+        && (request.resource.data.highestBidderName == null || request.resource.data.highestBidderName is string)
+        && (request.resource.data.highestBidderNameKey == null || request.resource.data.highestBidderNameKey is string)
+        && (request.resource.data.highestBidderPhone == null || request.resource.data.highestBidderPhone is string)
+        && request.resource.data.highestBidderMaxBid is number
+        && request.resource.data.highestBidderMaxBid >= request.resource.data.currentBid
+        && request.resource.data.highestBidderAutoIncrement is number
+        && request.resource.data.highestBidderAutoIncrement >= 0
+        && request.resource.data.bidCount == resource.data.bidCount + 1
+        && request.resource.data.updatedAt is number;
+    }
+
+    function listingSealedBidValid() {
+      return signedIn()
+        && resource.data.status == 'active'
+        && resource.data.bidType == 'sealed'
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'bidCount',
+          'sealedBidCount',
+          'updatedAt'
+        ])
+        && request.resource.data.bidCount == resource.data.bidCount + 1
+        && request.resource.data.sealedBidCount == resource.data.sealedBidCount + 1
+        && request.resource.data.updatedAt is number;
+    }
+
+    function listingOwnerStatusUpdateValid() {
+      return signedIn()
+        && resource.data.sellerNameKey is string
+        && request.resource.data.sellerNameKey == resource.data.sellerNameKey
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'status',
+          'updatedAt',
+          'soldAt'
+        ])
+        && request.resource.data.updatedAt is number
+        && (
+          (resource.data.status == 'active' && request.resource.data.status == 'sold' && request.resource.data.soldAt is number)
+          || (resource.data.status == 'active' && request.resource.data.status == 'rejected')
+        );
+    }
+
+    function listingOwnerSealedSelectValid() {
+      return signedIn()
+        && resource.data.sellerNameKey is string
+        && request.resource.data.sellerNameKey == resource.data.sellerNameKey
+        && resource.data.bidType == 'sealed'
+        && resource.data.status == 'active'
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'status',
+          'currentBid',
+          'highestBidderUid',
+          'highestBidderName',
+          'highestBidderNameKey',
+          'highestBidderPhone',
+          'selectedBidId',
+          'updatedAt',
+          'soldAt'
+        ])
+        && request.resource.data.status == 'sold'
+        && request.resource.data.currentBid is number
+        && request.resource.data.highestBidderUid is string
+        && request.resource.data.highestBidderName is string
+        && request.resource.data.highestBidderNameKey is string
+        && request.resource.data.highestBidderPhone is string
+        && request.resource.data.selectedBidId is string
+        && request.resource.data.updatedAt is number
+        && request.resource.data.soldAt is number;
+    }
+
+    match /users/{userId} {
+      allow create, read, update: if signedIn()
+        && request.resource.data.nameKey == userId;
+      allow delete: if false;
+    }
+
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if listingCreateValid();
+      allow update: if listingOwnerStatusUpdateValid() || listingOwnerSealedSelectValid() || listingOpenBidValid() || listingSealedBidValid();
+      allow delete: if signedIn() && resource.data.sellerNameKey is string;
+    }
+
+    match /bids/{bidId} {
+      allow read: if signedIn()
+        && (
+          (resource.data.bidderAuthUid is string && resource.data.bidderAuthUid == request.auth.uid)
+          || (resource.data.sellerUid is string && resource.data.sellerUid == request.auth.uid)
+        );
+      allow create: if signedIn()
+        && request.resource.data.bidderAuthUid is string
+        && request.resource.data.bidderNameKey is string
+        && request.resource.data.bidderPhone is string
+        && request.resource.data.sellerUid is string
+        && request.resource.data.sellerNameKey is string
+        && request.resource.data.listingId is string
+        && request.resource.data.listingTitle is string
+        && request.resource.data.listingBidType in ['open', 'sealed']
+        && request.resource.data.amount is number
+        && request.resource.data.requestedAmount is number
+        && request.resource.data.effectiveAmount is number
+        && request.resource.data.autoIncrement is number
+        && request.resource.data.mode in ['one-time', 'max-limit', 'sealed-offer']
+        && request.resource.data.status in ['accepted', 'rejected', 'submitted']
+        && request.resource.data.reason is string
+        && request.resource.data.createdAt is number;
+      allow update, delete: if false;
+    }
+
+    match /analyses/{analysisId} {
+      allow read: if signedIn()
+        && resource.data.ownerUid == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerNameKey is string
+        && request.resource.data.listingId is string
+        && request.resource.data.title is string
+        && request.resource.data.category is string
+        && request.resource.data.bidType in ['open', 'sealed']
+        && request.resource.data.image is string
+        && request.resource.data.description is string
+        && request.resource.data.details is list
+        && request.resource.data.year is number
+        && request.resource.data.minimumPrice is number
+        && request.resource.data.currentBid is number
+        && request.resource.data.recommendedMin is number
+        && request.resource.data.recommendedMax is number
+        && request.resource.data.summary is string
+        && request.resource.data.reasons is list
+        && request.resource.data.citations is list
+        && request.resource.data.analysisSource is string
+        && request.resource.data.analysisModel is string
+        && request.resource.data.analysisStatus is string
+        && request.resource.data.createdAt is number
+        && request.resource.data.updatedAt is number;
+      allow update: if signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.listingId == resource.data.listingId;
+      allow delete: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if signedIn() && resource.data.recipientNameKey is string;
+      allow create: if signedIn()
+        && request.resource.data.recipientNameKey is string
+        && request.resource.data.title is string
+        && request.resource.data.message is string
+        && request.resource.data.tone is string
+        && request.resource.data.createdAt is number;
+      allow update, delete: if false;
+    }
+  }
+}

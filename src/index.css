@@ -1,0 +1,1238 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Courier+Prime:wght@400;700&display=swap");
+
+/* Global design tokens: colors, typography, and spacing shared by the dashboard and intro pages. */
+:root {
+
+  --bg-dark: #1b1310; 
+  --surface: #261b17; 
+
+  --border: rgba(197, 160, 89, 0.2); 
+  --border-focus: rgba(197, 160, 89, 0.5); 
+
+  --primary: #c45b38;
+  --primary-hover: #a3482a;
+  --primary-text: #fffaf0; 
+
+  --text-main: #e8dec8; 
+  --text-muted: rgba(232, 222, 200, 0.65);
+  --text-eyebrow: #c5a059; 
+
+  --success: #6b8254; 
+  --success-bg: rgba(107, 130, 84, 0.15);
+  --danger: #b33939; 
+  --danger-bg: rgba(179, 57, 57, 0.15);
+  --pending: #cc9b33; 
+  --pending-bg: rgba(204, 155, 51, 0.15);
+
+  --font-base: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-mono: "Courier Prime", "Courier New", monospace; 
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px; 
+  color-scheme: dark; 
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Base reset so the app fills the viewport predictably across routes. */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+
+  font-size: 16px; 
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button { cursor: pointer; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* Shared page containers for the dashboard shell and the centered login state. */
+.app-shell,
+.login-screen {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 48px;
+}
+
+.login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.two-column-layout,
+.history-layout,
+.panel-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.panel-grid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.two-column-layout,
+.history-layout {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stats-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+
+/* Core panel styling reused by cards, stat tiles, and modal surfaces. */
+.login-card,
+.panel,
+.market-card,
+.history-card,
+.stat-card,
+.modal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); 
+}
+
+.market-card:hover,
+.history-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15); 
+}
+
+.login-card {
+  width: min(440px, 100%);
+  padding: 32px 28px; 
+  box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.12); 
+}
+
+.panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Typography primitives for headings, labels, and secondary copy. */
+h1, h2, h3, p { margin: 0; }
+
+h1, h2, h3, 
+.login-card h1, 
+.topbar h1 {
+
+  font-family: var(--font-serif);
+  color: var(--text-main);
+}
+
+.login-card h1,
+.topbar h1 {
+  font-size: 1.7rem; 
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-base);
+  color: var(--text-eyebrow);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.subtle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.price-chip,
+.stat-card strong,
+.detail-grid strong {
+  font-family: var(--font-mono);
+  letter-spacing: -0.03em;
+}
+
+.price-chip {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.stat-card strong {
+  font-size: 1.3rem;
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* Shared form layout for auth, selling, analysis, and bidding inputs. */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.field span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(196, 91, 56, 0.1);
+}
+
+.field input[type="number"] {
+  font-family: var(--font-mono);
+}
+
+/* Common button system for primary actions, ghost actions, tabs, and icon buttons. */
+.primary-button,
+.ghost-button,
+.danger-button,
+.tab,
+.icon-button,
+.btn-primary,
+.btn-ghost {
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.primary-button,
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-text);
+  box-shadow: 0 2px 4px rgba(196, 91, 56, 0.2);
+}
+
+.primary-button:hover:not(:disabled),
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(196, 91, 56, 0.3);
+}
+
+.primary-button:active:not(:disabled),
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(196, 91, 56, 0.2);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.danger-button {
+  background: var(--danger);
+  color: var(--primary-text);
+}
+
+.danger-button:hover {
+  background: #802f2f;
+  transform: translateY(-1px);
+}
+
+.ghost-button,
+.icon-button,
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+}
+
+.ghost-button:hover,
+.icon-button:hover,
+.btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: var(--border-focus);
+}
+
+.tab {
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+}
+
+.tab:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 700;
+}
+
+.tabbar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Marketplace card layout, image treatment, and history list presentation. */
+.market-card,
+.preview-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.market-image,
+.history-image {
+  width: 100%;
+  height: 140px; 
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+
+  filter: sepia(40%) contrast(90%) brightness(95%);
+  transition: filter 0.3s ease;
+}
+
+.market-card:hover .market-image {
+
+  filter: sepia(0%) contrast(100%) brightness(100%);
+}
+
+.market-card-body,
+.history-content,
+.modal-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.market-card-heading,
+.card-actions,
+.detail-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-cluster {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-tag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.status {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  border: 1px solid currentColor;
+}
+
+.status.active,
+.status.accepted,
+.status.ready {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+.status.pending,
+.status.saved,
+.status.submitted {
+  color: var(--pending);
+  background: var(--pending-bg);
+}
+
+.status.sold {
+  color: var(--primary);
+  background: rgba(196, 91, 56, 0.08);
+}
+
+.status.rejected {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.detail-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: grid;
+  gap: 4px;
+}
+
+.history-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  min-height: 120px;
+  overflow: hidden;
+}
+
+.history-card.compact {
+  grid-template-columns: 1fr;
+  min-height: auto;
+}
+
+.history-image {
+  height: 100%;
+  border-bottom: none;
+  border-right: 1px solid var(--border);
+}
+
+.history-list,
+.notification-list {
+  display: grid;
+  gap: 12px;
+}
+
+/* Analysis tab structures, sealed-offer cards, and recommendation details. */
+.analysis-card {
+  gap: 0;
+  overflow: hidden;
+}
+
+.sealed-offers {
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.sealed-offer-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sealed-offer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.analysis-card-top {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+}
+
+.analysis-image {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  object-fit: cover;
+  border-right: 1px solid var(--border);
+}
+
+.analysis-range {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analysis-range > div {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.analysis-range span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.analysis-range strong {
+  font-family: var(--font-mono);
+}
+
+.citation-list {
+  display: grid;
+  gap: 8px;
+}
+
+.citation-link {
+  color: var(--text-main);
+  text-decoration: underline;
+  text-decoration-color: var(--border-focus);
+  word-break: break-word;
+}
+
+.citation-link:hover {
+  color: var(--primary);
+}
+
+.notification {
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.notification.success {
+  border-left: 4px solid var(--success);
+}
+
+.notification.danger {
+  border-left: 4px solid var(--danger);
+}
+
+.notification span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.panel-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+.empty-state {
+  font-size: 0.9rem;
+  font-style: italic;
+  font-family: var(--font-serif);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Compact inline feedback styles for validation errors and bid results. */
+.error-text,
+.bid-message {
+  font-size: 0.85rem;
+  margin: 0;
+}
+.error-text,
+.bid-message.danger { color: var(--danger); }
+.bid-message.success { color: var(--success); }
+
+.bid-mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.toggle-chip {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-main);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.toggle-chip:hover {
+  border-color: var(--border-focus);
+}
+
+.toggle-chip.active {
+  background: rgba(196, 91, 56, 0.12);
+  border-color: var(--primary);
+  color: var(--primary-text);
+}
+
+/* Persistent identity ribbon and the bid-details modal overlay. */
+.corner-identity {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  gap: 12px;
+  padding: 6px 16px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-bottom-right-radius: var(--radius-lg);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05); 
+}
+
+.corner-identity span,
+.corner-identity strong {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.corner-identity strong { color: var(--primary); }
+
+.session-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.session-pill span {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.session-pill strong {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65); 
+  backdrop-filter: blur(4px); 
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 50;
+
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  width: min(800px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.4); 
+  transform: translateY(0);
+}
+
+.modal-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-right: 1px solid var(--border);
+  filter: sepia(20%);
+}
+
+.detail-grid > div {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-dark); 
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03); 
+}
+
+.detail-grid span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Responsive adjustments for dashboard cards, modal layout, and analysis panes. */
+@media (max-width: 800px) {
+  .two-column-layout,
+  .history-layout,
+  .panel-grid,
+  .modal-card {
+    grid-template-columns: 1fr;
+  }
+
+  .history-card {
+    grid-template-columns: 1fr;
+  }
+
+  .history-image {
+    height: 140px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-media img {
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-card-top,
+  .analysis-range {
+    grid-template-columns: 1fr;
+  }
+
+  .sealed-offer-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .analysis-image {
+    min-height: 180px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* Intro/landing page shell, hero section, and decorative background treatment. */
+.intro-page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+.intro-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 100% 24px; 
+}
+
+.intro-page .ambient {
+  display: none; 
+}
+
+.intro-page .wrap {
+  position: relative;
+  z-index: 1;
+  width: min(960px, calc(100% - 32px)); 
+  margin: 0 auto;
+}
+
+.intro-page section {
+  padding: 80px 0; 
+}
+
+.intro-page .hero {
+  min-height: 80vh; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 0 60px;
+}
+
+.intro-page .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08); 
+}
+
+.intro-page .badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 0; 
+  animation: none; 
+}
+
+.intro-page .hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 6vw, 4rem); 
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.intro-page .hero-title span { color: var(--text-main); }
+.intro-page .hero-title .line > span { color: var(--primary); font-style: italic; }
+
+.intro-page .hero-title .line { display: block; }
+
+.intro-page .hero-sub {
+  max-width: 640px;
+  font-size: 1.1rem; 
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 40px;
+  font-family: var(--font-serif);
+}
+
+.intro-page .assessment-box {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 24px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.intro-page .assessment-heading { margin-bottom: 16px; }
+
+.intro-page .assessment-heading h2 { font-size: 1.25rem; }
+
+.intro-page .assessment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.intro-page .assessment-item {
+  padding: 10px 12px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.intro-page .assessment-item span {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.intro-page .assessment-item strong {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  color: var(--text-main);
+}
+
+.intro-page .hero-cta {
+  display: flex;
+  gap: 16px;
+}
+
+.intro-page .divider {
+  height: 1px;
+  background: var(--border);
+  width: 100%;
+  position: relative;
+}
+.intro-page .divider::after {
+  content: "❧"; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-dark);
+  padding: 0 12px;
+  color: var(--border-focus);
+  font-size: 1.2rem;
+}
+
+/* Shared intro-page heading blocks and multi-card grid helpers. */
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  letter-spacing: 0.1em;
+}
+
+.section-title {
+  font-size: 2rem; 
+  margin-bottom: 16px;
+  font-family: var(--font-serif);
+}
+
+.section-lead {
+  max-width: 600px;
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+
+.ps-grid,
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Intro-page content cards used for problem statements and feature modules. */
+.ps-card,
+.module-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.ps-card:hover,
+.module-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12); 
+}
+
+.ps-card-icon,
+.mod-icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.ps-card h3,
+.module-card h3 {
+  font-size: 1.2rem;
+  color: var(--text-main);
+}
+
+.ps-card p,
+.module-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.feat-list {
+  margin: 12px 0 0;
+  padding-left: 16px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+.pd-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr; 
+  gap: 48px;
+}
+
+.pd-text {
+  font-size: 1rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  line-height: 1.7;
+}
+
+.pd-highlight {
+  padding: 20px 24px;
+  border-left: 4px solid var(--primary);
+  background: rgba(196, 91, 56, 0.05);
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--text-main);
+  font-style: italic;
+  margin-top: 12px;
+}
+
+.pd-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05); 
+}
+
+.stat-num {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Process-flow diagram styles for the landing page walkthrough. */
+.flow-wrap {
+  background: var(--surface);
+  border: 1px dashed var(--border-focus); 
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flow-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.flow-node {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.node-box {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  padding: 12px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.node-icon { font-size: 1.4rem; }
+
+.node-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.node-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.flow-arrow .arrow-line {
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: var(--border-focus);
+}
+
+.flow-vconn {
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.vline {
+  width: 2px;
+  height: 100%;
+  background: var(--border-focus);
+}
+
+.result-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.result-box {
+  flex: 1;
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg-dark);
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.03); 
+}
+
+.result-box span {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-family: var(--font-base);
+}
+
+.res-accept { border-top: 4px solid var(--success); }
+.res-reject { border-top: 4px solid var(--danger); }
+
+/* Closing call-to-action sections near the bottom of the landing page. */
+.portfolio-cta,
+.footer-cta {
+  text-align: center;
+  max-width: 600px; 
+  margin: 0 auto;
+}
+
+.portfolio-cta h3 {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.footer-cta h2 {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.footer-cta span {
+  color: var(--primary);
+  font-style: italic;
+}
+
+.footer-note {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 32px;
+  line-height: 1.6;
+}
+
+.reveal { opacity: 1; }
+
+.m-buy, .m-sell, .m-hist, .m-notif, .m-auth, .m-bid {
+  border-top: 3px solid var(--primary);
+}
+
+/* Mobile-only layout cleanup for the landing page storytelling sections. */
+@media (max-width: 800px) {
+  .pd-layout { grid-template-columns: 1fr; }
+  .flow-row { flex-direction: column; }
+  .flow-arrow .arrow-line { width: 2px; height: 16px; }
+}
