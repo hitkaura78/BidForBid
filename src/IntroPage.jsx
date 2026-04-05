@@ -144,7 +144,7 @@ function IntroPage({ session }) {
   // Logged-in users jump straight to the dashboard; others go to login.
   const launchPath = session ? "/dashboard" : "/login";
   const launchLabel = session ? "Continue to dashboard" : "Launch App";
-  const portfolioUrl = "";
+  const portfolioUrl = "https://portfolio-gamma-gold-80.vercel.app/";
 
   // Submission metadata shown near the top of the page.
   const assessmentDetails = [
@@ -485,7 +485,7 @@ function IntroPage({ session }) {
           <h3>PortFolio</h3>
           <a
             className="btn-primary portfolio-button"
-            href={https://portfolio-gamma-gold-80.vercel.app/}
+            href={portfolioUrl}
             target="_blank"
             rel="noreferrer"
           >
