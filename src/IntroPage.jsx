@@ -158,7 +158,7 @@ function IntroPage({ session }) {
     { label: "Course Title", value: "Web Programming" },
     { label: "ClassNbr", value: "VL2025260504802" },
     { label: "Slot", value: "L1+L2+ L29+L30" },
-    { label: "Date", value: "03-04-2026" },
+    { label: "Date", value: "06-04-2026" },
   ];
 
   useEffect(() => {
@@ -485,7 +485,7 @@ function IntroPage({ session }) {
           <h3>PortFolio</h3>
           <a
             className="btn-primary portfolio-button"
-            href={portfolioUrl}
+            href={https://portfolio-gamma-gold-80.vercel.app/}
             target="_blank"
             rel="noreferrer"
           >
