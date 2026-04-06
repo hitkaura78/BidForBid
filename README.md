@@ -62,7 +62,7 @@ BidForBid/
 
 Firestore Security Rules
 All bid and listing validation is enforced at the database level via firestore.rules. Deploy rules using the Firebase CLI:
-bashfirebase deploy --only firestore:rules
+firebase deploy --only firestore:rules
 
 Deployment
 To deploy the frontend to Firebase Hosting:
